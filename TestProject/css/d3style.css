@@ -15,3 +15,8 @@ div.bar {
     background-color: teal;
     margin-right: 2px;
 }
+
+
+svg {
+    fill: teal;
+}
