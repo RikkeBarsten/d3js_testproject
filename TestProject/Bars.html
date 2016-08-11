@@ -9,10 +9,8 @@
 <body>
     <h4><a href="/index.html">Hjem</a></h4>
     <hr />
-    <p>
-        Click on this text to update the chart with new data values
-        as many times as you like!
-    </p>
+    <p id="add">Click to add data value.</p>
+    <p id="remove"> Click on this to remove a value. </p>
     <script type="text/javascript">
 
         ///Width and height
@@ -20,8 +18,35 @@
         var h = 250;
         var maxValue = 100;
 
-        var dataset = [5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
-                        11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
+        //var dataset = [5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
+        //                11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
+
+        var dataset = [{ key: 0, value: 5 },
+                { key: 1, value: 10 },
+                { key: 2, value: 13 },
+                { key: 3, value: 19 },
+                { key: 4, value: 21 },
+                { key: 5, value: 25 },
+                { key: 6, value: 22 },
+                { key: 7, value: 18 },
+                { key: 8, value: 15 },
+                { key: 9, value: 13 },
+                { key: 10, value: 11 },
+                { key: 11, value: 12 },
+                { key: 12, value: 15 },
+                { key: 13, value: 20 },
+                { key: 14, value: 18 },
+                { key: 15, value: 17 },
+                { key: 16, value: 16 },
+                { key: 17, value: 18 },
+                { key: 18, value: 23 },
+                { key: 19, value: 25 }];
+
+        var key = function (d) {
+            return d.key;
+        };
+
+        var keyNumber = 19;
 
         var xScale = d3.scaleBand()
             .domain(d3.range(dataset.length))
@@ -30,7 +55,7 @@
             .paddingOuter(0.05);
 
         var yScale = d3.scaleLinear()
-                        .domain([0, d3.max(dataset)])
+                        .domain([0, d3.max(dataset, function (d) { return d.value; })])
                         .range([0, h]);
 
         //Create SVG element
@@ -41,69 +66,156 @@
 
         //Create bars (xScale.rangeBand() replaced by xScale.bandwidth()
         svg.selectAll("rect")
-           .data(dataset)
+           .data(dataset, key)
            .enter()
            .append("rect")
            .attr("x", function (d, i) {
                return xScale(i);
            })
            .attr("y", function (d) {
-               return h - yScale(d);
+               return h - yScale(d.value);
            })
            .attr("width", xScale.bandwidth())
            .attr("height", function (d) {
-               return yScale(d);
+               return yScale(d.value);
            })
            .attr("fill", function (d) {
-               return "rgb(0, 0, " + (d * 10) + ")";
+               return "rgb(0, 0, " + (d.value * 10) + ")";
            });
 
         //Create labels
         svg.selectAll("text")
-           .data(dataset)
+           .data(dataset, key)
            .enter()
            .append("text")
-           .text(function (d) { return d; })
+           .text(function (d) { return d.value; })
            .attr("text-anchor", "middle")
            .attr("x", function (d, i) { return xScale(i) + xScale.bandwidth() / 2; })
-           .attr("y", function (d) { return h - yScale(d) + 14; })
+           .attr("y", function (d) { return h - yScale(d.value) + 14; })
            .attr("font-family", "sans-serif")
            .attr("font-size", "11px")
            .attr("fill", "white");
 
-        d3.select("p")
+        
+
+        //Update the entire dataset
+        //d3.select("p")
+        //    .on("click", function () {
+
+        //        ////Update dataset
+        //        //dataset = [11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
+        //        //     5, 10, 13, 19, 21, 25, 22, 18, 15, 13];
+
+        //        //New values for dataset
+        //        var numValues = dataset.length;                             //Count original length of dataset
+        //        dataset = [];                                               //Initialize empty array
+        //        for (var i = 0; i < numValues; i++) {                       //Loop numValues times
+        //            var newNumber = Math.floor(Math.random() * maxValue);   //New random integer (0-maxValue)
+        //            dataset.push(newNumber);                                //Add new number to array
+        //        }
+
+        //        //Update scale domain
+        //        yScale.domain([0, d3.max(dataset, function(d) { return d.value; })]);
+
+        //        //Bind new dataset
+        //        svg.selectAll("rect").data(dataset)
+        //            .transition().delay(function (d, i) { return i / dataset.length * 1000; }).duration(500).ease(d3.easeCubicInOut)
+        //            .attr("y", function (d) { return h - yScale(d.value); })
+        //            .attr("height", function (d) { return yScale(d.value); })
+        //            .attr("fill", function (d) { return "rgb(0, 0, " + (d.value * 10) + ")"; });
+
+        //        svg.selectAll("text")
+        //           .data(dataset)
+        //           .transition().delay(function (d, i) { return i / dataset.length * 1000; })
+        //           .duration(500).ease(d3.easeCubicInOut)
+        //           .text(function (d) { return d.value; })
+        //           .attr("x", function (d, i) { return xScale(i) + xScale.bandwidth() / 2; })
+        //           .attr("y", function (d) { return h - yScale(d.value) + 14; });
+        //    });
+
+        //Update only one value
+        d3.selectAll("p")
             .on("click", function () {
 
-                ////Update dataset
-                //dataset = [11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
-                //     5, 10, 13, 19, 21, 25, 22, 18, 15, 13];
+                var paragraphID = d3.select(this).attr("id");
 
-                //New values for dataset
-                var numValues = dataset.length;                             //Count original length of dataset
-                dataset = [];                                               //Initialize empty array
-                for (var i = 0; i < numValues; i++) {                       //Loop numValues times
-                    var newNumber = Math.floor(Math.random() * maxValue);   //New random integer (0-maxValue)
-                    dataset.push(newNumber);                                //Add new number to array
+                if (paragraphID == "add") {
+
+                    //Update dataset
+                    var maxValue = 25;
+                    var newNumber = Math.floor(Math.random() * maxValue);
+                    var lastKeyValue = dataset[dataset.length - 1].key;
+                    dataset.push({ key: lastKeyValue+1, value: newNumber });
+                }
+                else {
+                    // Remove value from start of dataset:
+                    dataset.shift();
                 }
 
-                //Update scale domain
-                yScale.domain([0, d3.max(dataset)]);
+                            
 
-                //Bind new dataset
-                svg.selectAll("rect").data(dataset)
-                    .transition().delay(function (d, i) { return i / dataset.length * 1000; }).duration(500).ease(d3.easeCubicInOut)
-                    .attr("y", function (d) { return h - yScale(d); })
-                    .attr("height", function (d) { return yScale(d); })
-                    .attr("fill", function (d) { return "rgb(0, 0, " + (d * 10) + ")"; });
+                //Update x scale domain
+                xScale.domain(d3.range(dataset.length));
 
-                svg.selectAll("text")
-                   .data(dataset)
-                   .transition().delay(function (d, i) { return i / dataset.length * 1000; })
-                   .duration(500).ease(d3.easeCubicInOut)
-                   .text(function (d) { return d; })
+                
+                
+                //Select 
+                var bars = svg.selectAll("rect").data(dataset, key);
+
+                bars.enter()
+                   .append("rect")
+                   .attr("x", w)
+                   .attr("y", function (d) { return h - yScale(d.value); })
+                   .attr("width", xScale.bandwidth())
+                   .attr("height", function (d) { return yScale(d.value); })
+                   .attr("fill", function (d) { return "rgb(0, 0, " + (d.value * 10) + ")"});
+
+                bars.transition().duration(500)
+                    .attr("x", function (d, i) { return xScale(i); })
+                    .attr("y", function (d) { return h - yScale(d.value);})
+                    .attr("width", xScale.bandwidth())
+                    .attr("height", function (d) { return yScale(d.value); })
+                    .attr("fill", function (d) { return "rgb(0, 0, " + (d.value * 10) + ")"});
+                             
+               
+                //Create labels
+                svg.selectAll("text").data(dataset, key)
+                   .enter()
+                   .append("text")
+                   .text(function (d) { return d.value; }).attr("text-anchor", "middle")
                    .attr("x", function (d, i) { return xScale(i) + xScale.bandwidth() / 2; })
-                   .attr("y", function (d) { return h - yScale(d) + 14; });
+                   .attr("y", function (d) { return h - yScale(d.value) + 14; })
+                   .attr("font-family", "sans-serif")
+                   .attr("font-size", "11px")
+                   .attr("fill", "white");
+
+
+                 svg.selectAll("text").data(dataset, key).transition().duration(500)
+                   .attr("text-anchor", "middle")
+                   .attr("x", function (d, i) { return xScale(i) + xScale.bandwidth() / 2; })
+                   .attr("y", function (d) { return h - yScale(d.value) + 14; })
+                   .attr("font-family", "sans-serif")
+                   .attr("font-size", "11px")
+                   .attr("fill", "white");
+
+                // Remove bar
+                 bars.exit().transition().duration(500)
+                     .attr("x", -xScale.bandwidth()) // <-- Exit stage left.remove();
+                     .remove();  
+
+                //Remove labels
+                 svg.selectAll("text").data(dataset, key)
+                     .exit()
+                     .transition().duration(500)
+                     .attr("x", -xScale.bandwidth())
+                     .remove();
+
+
             });
+
+        
+                
+            
 
     </script>
     <hr />
