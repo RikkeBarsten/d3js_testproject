@@ -17,6 +17,7 @@
         var w = 600;
         var h = 250;
         var maxValue = 100;
+        var sortOrder = true;
 
         //var dataset = [5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
         //                11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
@@ -81,7 +82,10 @@
            })
            .attr("fill", function (d) {
                return "rgb(0, 0, " + (d.value * 10) + ")";
+           }).on("click", function () {
+               sortBars();
            });
+       
 
         //Create labels
         svg.selectAll("text")
@@ -209,11 +213,37 @@
                      .transition().duration(500)
                      .attr("x", -xScale.bandwidth())
                      .remove();
-
-
             });
 
-        
+        var sortBars = function () {
+
+            sortOrder = !sortOrder;
+
+            svg.selectAll("rect")
+                .sort(function (a, b) {
+                    if (sortOrder)
+                        return d3.ascending(a.value, b.value);
+                    else
+                        return d3.descending(a.value, b.value);
+                })
+            .transition().delay(function (d, i) { return i * 50 }).duration(1000)
+            .attr("x", function (d, i) {
+                return xScale(i);
+            });
+
+            svg.selectAll("text")
+                .sort(function (a, b) {
+                    if (sortOrder)
+                        return d3.ascending(a.value, b.value);
+                    else
+                        return d3.descending(a.value, b.value);
+                })
+            .transition().delay(function (d, i) { return i * 50 }).duration(1000)
+            .attr("x", function (d, i) {
+                return xScale(i) + xScale.bandwidth() / 2;
+            });
+       
+        }
                 
             
 
