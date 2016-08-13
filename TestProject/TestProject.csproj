@@ -86,6 +86,7 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="Plots.html" />
+    <Content Include="Quiz1.html" />
     <Content Include="Udacity_maps_course.html" />
     <Content Include="Web.config" />
   </ItemGroup>
