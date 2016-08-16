@@ -69,6 +69,7 @@
     <Content Include="Bars.html" />
     <Content Include="css\d3style.css" />
     <Content Include="css\GoogleMapsStyle.css" />
+    <Content Include="css\PieChartStyle.css" />
     <Content Include="d3\d3.js" />
     <Content Include="d3\d3.min.js" />
     <Content Include="packages.config" />

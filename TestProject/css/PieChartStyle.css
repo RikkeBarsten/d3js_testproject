@@ -1,0 +1,10 @@
+﻿ .legend {
+    font-size: 12px;
+    font-family: sans-serif;
+  }
+  rect {
+    stroke-width: 2;
+  }
+  .legend text {
+      font-family: sans-serif;
+  }
