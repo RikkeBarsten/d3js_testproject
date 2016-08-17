@@ -77,6 +77,7 @@
     <Content Include="d3\CHANGES.md" />
     <Content Include="d3\LICENSE" />
     <Content Include="d3\README.md" />
+    <Content Include="Content\ParkingTickets.csv" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -87,6 +88,7 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="Pie.html" />
+    <Content Include="Pie2.html" />
     <Content Include="Plots.html" />
     <Content Include="Quiz1.html" />
     <Content Include="Udacity_maps_course.html" />
@@ -95,6 +97,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
