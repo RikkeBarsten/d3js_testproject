@@ -42,7 +42,7 @@
             ];
 
             var largeInfoWindow = new google.maps.InfoWindow();
-            var bounds = new google.maps.LatLngBounds();
+            
 
             //Loop through listings to create to populate the markers array
             for (var i = 0; i < locations.length; i++) {
@@ -53,12 +53,12 @@
 
                 //Create the marker, and put it in the markers array:
                 var marker = new google.maps.Marker({
-                       
-                        position: position,
-                        title: title,
-                        animation: google.maps.Animation.DROP,
-                        id: i
-                    });
+
+                    position: position,
+                    title: title,
+                    animation: google.maps.Animation.DROP,
+                    id: i
+                });
 
                 markers.push(marker);
 
@@ -66,10 +66,8 @@
                 marker.addListener("click", function () {
                     populateInfoWindow(this, largeInfoWindow);
                 });
+            }
 
-                            }
-
-            
 
             //Event listeners for show and hide buttons
             document.getElementById("show-listings").addEventListener("click", showListings);
@@ -77,20 +75,65 @@
             
         }
 
-        console.log(markers);
+        
 
         //Function to populate infoWindows
-        function populateInfoWindow(marker, infoWindow) {
+        function populateInfoWindow(marker, infoWindow) 
+        {
             //Check if this markers' infoWindow is already open
             if (infoWindow.marker != marker)
             {
+
+                infoWindow.setContent('');
+                
                 infoWindow.marker = marker;
-                infoWindow.setContent("<div>" + marker.title + "</div>");
                 infoWindow.open(map, marker);
 
                 infoWindow.addListener("closeclick", function () {
-                    infoWindow.setMarker(null);
+                    infoWindow.marker = null;
                 });
+
+
+                var streetViewService = new google.maps.StreetViewService();
+                var radius = 50;
+                //Compute streetview image if status ok (image found)
+
+                function getStreetView(data, status) {
+
+                    if (status == google.maps.StreetViewStatus.OK) {
+                        var nearStreetViewLocation = data.location.latLng;
+
+                        var heading = google.maps.geometry.spherical.computeHeading(
+                            nearStreetViewLocation, marker.position);
+
+                        infoWindow.setContent('<div>' + marker.title + '</div>' + '<div id="pano">' + '</div>');
+                        
+                        var panoramaOptions =
+                            {
+                                position: nearStreetViewLocation,
+                                pov:
+                                    {
+                                        heading: heading,
+                                        pitch: 30
+                                    }
+                            };
+                        var panorama = new google.maps.StreetViewPanorama(
+                        document.getElementById('pano'), panoramaOptions);
+                      
+
+                    }
+                    else
+                    {
+                        infoWindow.setContent("<div>" + marker.title + "</div>" +
+                            "<div>No street view found</div>");
+
+                        console.log("no pano available");
+                    }
+                }
+
+                streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+
+                infoWindow.open(map, marker);
             }
         }
 
@@ -115,7 +158,7 @@
     </script>
     
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkafsA78VqSPwxKUavJsnAvqjcsiI9JfI&v=3&callback=initMap">
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkafsA78VqSPwxKUavJsnAvqjcsiI9JfI&libraries=geometry&v=3&callback=initMap">
     </script>
 
 
